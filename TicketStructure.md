@@ -105,7 +105,7 @@ This portion of the project simply helps describe your work as well as highlight
 - **Then** update said values with your specific details.
 
 **Ticket Requirements:**
-- All keys within the object must remain the as they are provided.
+- All keys within the object must remain as they are provided.
 
 **Notes:**
 - All comments provided are meant to help guide what is intended.
