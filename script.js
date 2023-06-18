@@ -116,7 +116,7 @@ var gameStatus = "pending";
 
 let currentLocation = "car";
 
-const welcomeMessage = '182 Main St- You are sitting in your car, parked on Main Street between Church and South Winooski. The streets are deserted, you see that there is a light on in a second floor window. You are meant to deliver the Uber Eats to someone at this address.',
+const welcomeMessage = '182 Main St- You are sitting in your car, parked on Main Street between Church and South Winooski. The streets are deserted, you see that there is a light on in a second floor window. You are meant to deliver the Uber Eats to someone at this address.';
 
 const prompt = `What do you do? >_`;
 
@@ -339,4 +339,309 @@ export const domDisplay = (playerInput) => {
     */
 
     // Your code here
+
+    // ---------------------------------AsyncInterfaceLoop(s)-------------------------------------------------- //
+
+// start();
+
+// async function start() {
+//   gameStatus = "start";
+
+//   console.log(welcomeMessage);
+
+//   while (gameStatus !== "end") {
+    let answer = playerInput;
+
+    // -----------------------------------SplittingResponseInto2Words--------------------------------------------------- //
+
+    var parseAnswer = [];
+    parseAnswer.push(answer.toLowerCase().split(" "));
+
+    var words = parseAnswer[0];
+    var word1 = words[0];
+    var word2 = words[1];
+
+    //if for drop
+    if (commands.drop.includes(word1)) {
+      drop(word2);
+
+      //else if for Help!
+      //Should include list of commands and directions on how to use two word answers
+    } else if (commands.helpList.includes(word1)) {
+      help();
+
+      //else if for inventory
+    } else if (commands.inventory.includes(word1)) {
+      inventory();
+
+      // else if for look
+    } else if (commands.look.includes(word1)) {
+      look(word2);
+
+      //else if for menu
+    } else if (answer == "menu") {
+      console.log("menu");
+
+      //else if for move
+    } else if (commands.move.includes(word1)) {
+      move(word2);
+
+      //else if for possMoves
+    } else if (commands.possibleMoves.includes(word1)) {
+      possibleMoves();
+
+      //else if for quit
+    } else if (commands.quit.includes(word1)) {
+      quit();
+
+      //else if for take
+    } else if (commands.take.includes(word1)) {
+      take(word2);
+
+      //else if for Teleport
+    } else if (commands.teleport.includes(word1)) {
+      teleport(word2);
+
+      //else if for use
+    } else if (commands.use.includes(word1)) {
+     use(word2);
+
+      //else for help
+    } else {
+      console.log(`type "help" for a list commands`);
+    }
+//   }
+  //else for exit
+//   process.exit();
+// }
+
+// --------------------------------------commandFunctions-------------------------------------------------- //
+
+function drop(dropItem) {
+    // Removing the specified element by value from the array
+    if (player.inventory.includes(dropItem)) {
+      for (var i = 0; i < player.inventory.length; i++) {
+        if (player.inventory[i] === dropItem) {
+          var spliced = player.inventory.splice(i, 1);
+        }
+        roomLookUp[currentLocation].Item.push(dropItem);
+        itemLookUp[dropItem].place = currentLocation;
+      }
+      if (uber_eats.place == "second_floor") {
+        deliverance.locked = false;
+        console.log("The path to freedom is clear.");
+      }
+    } else {
+      console.log(
+        `You can not drop ${dropItem} because it is not in your inventory.`
+      );
+    }
+  }
+  
+  function help() {
+    console.log(`You are currently at ${currentLocation}`);
+    console.log("Please give your instructions in the following format: \"word 1 = command\" \"word 2 = target of command\".")
+    console.log(commands)
+  }
+  
+  function inventory() {
+    console.log(player.inventory);
+  }
+  
+  //function to look at rooms & items
+  function look(objOfInt) {
+    if (objOfInt == currentLocation) {
+      if (roomLookUp[objOfInt]?.name.includes(objOfInt)) {
+        console.log(roomLookUp[objOfInt].what);
+        return `roomLookUp[objOfInt].what`
+      }
+    } else if (itemLookUp[objOfInt]?.name.includes(objOfInt)) {
+      if (
+        itemLookUp[objOfInt].place.includes(currentLocation) ||
+        player.inventory.includes(objOfInt)
+      ) {
+        console.log(itemLookUp[objOfInt].what);
+        return `roomLookUp[objOfInt].what`
+      } else {
+        console.log(`${objOfInt} is not at ${currentLocation}.`);
+        return `${objOfInt} is not at ${currentLocation}.`
+      }
+    } else {
+      console.log(`You can not see ${objOfInt} from ${currentLocation}`);
+      return `You can not see ${objOfInt} from ${currentLocation}`
+    }
+  }
+  function menu() {
+    //placeholder
+  }
+  
+  //function to move between locations
+  function move(newLocation) {
+    let possMoves = bldgMap[currentLocation];
+  
+    if (!possMoves.includes(newLocation)) {
+      console.log(
+        `Unfortumantely, you can not go to ${newLocation} from ${currentLocation}`
+      );
+    } else if (roomLookUp.foyer.name.includes(newLocation)) {
+      if (foyer.locked === true) {
+        console.log(`The front door is locked, use keypad to enter.`);
+      } else {
+        console.log(`Moving to ${newLocation}... `);
+        currentLocation = newLocation;
+        if (uber_eats.place !== "second_floor") {
+        console.log("The Uber Eats needs to be delivered!");
+        } else {
+          console.log("The path to freedom is clear.");
+  
+        }
+      }
+    } else if (roomLookUp[newLocation].locked === true) {
+      console.log(
+        `You can not go to ${newLocation} from ${currentLocation} the way is blocked`
+      );
+  
+      // } else if ([currentLocation] == "stairs" && [newLocation] == "second_floor") {
+      //     if
+    } else {
+      console.log(`Moving to ${newLocation}... `);
+      currentLocation = newLocation;
+      if (uber_eats.place !== "second_floor") {
+        console.log("The Uber Eats needs to be delivered!");
+        } else {
+          console.log("The path to freedom is clear.");
+  
+        }
+    }
+  }
+  
+  //function to show possible moves and interactable objects
+  function possibleMoves() {
+    console.log(`You are currently in ${currentLocation}.`);
+    let poss = JSON.stringify(bldgMap[currentLocation]);
+    let possItems = JSON.stringify(roomLookUp[currentLocation].Item);
+    console.log(`From here you can go to: ${poss}.`);
+    if (possItems !== false) console.log(`Around you, you see ${possItems}.`);
+  }
+  
+  //function to add items to inventory and remove them from existing locations
+  function take(item2Add) {
+    if (itemLookUp[item2Add]?.name.includes(item2Add)) {
+      if (itemLookUp[item2Add].place.includes(currentLocation)) {
+        if (itemLookUp[item2Add].inv === true) {
+          if (uber_eats.place !== "second_floor") {
+            deliverance.locked == true;
+            console.log("The Uber Eats needs to be delivered!");
+          }
+          console.log(`You add ${item2Add} to your inventory.`);
+          player.inventory.push(item2Add);
+          itemLookUp[item2Add].place = "inventory";
+          // Removing the specified element by value from the array
+          for (var i = 0; i < roomLookUp[currentLocation].Item.length; i++) {
+            if (roomLookUp[currentLocation].Item[i] === item2Add) {
+              var spliced = roomLookUp[currentLocation].Item.splice(i, 1);
+            }
+            
+          }
+        } else {
+          console.log(`You can not pick up ${item2Add}.`);
+        }
+      } else {
+        console.log(`${item2Add} is not at ${currentLocation}.`);
+      }
+    } else {
+      console.log(`${item2Add} is not a valid choice.`);
+    }
+  }
+  
+  //teleport for debugging/testing
+  function teleport(newLocation) {
+    if (roomLookUp[newLocation].name.includes(newLocation)) {
+      currentLocation = newLocation;
+    } else {
+      console.log(`Check your spelling ${newLocation} is not a valid location.`);
+    }
+  }
+  
+  // -------------------------------------UseItem--------------------------------------------------- //
+  // While loop for keypad entry
+  function use(useItem) {
+    if (
+      roomLookUp[currentLocation].Item.includes(useItem) ||
+      player.inventory.includes(useItem)
+    ) {
+      if (itemLookUp.keypad.name.includes(useItem)) {
+        let passCode = "";
+         keyStart();
+        async function keyStart() {
+          let doorPrompt = "Please input PassCode to enter (type exit to end) >_";
+          while (passCode !== "exit") {
+            passCode = await ask(doorPrompt);
+  
+            if (passCode !== "93378") {
+              if (passCode !== "exit") {
+                console.log(passCode);
+                console.log(
+                  "A disembodied voice drones : That code is incorrect."
+                );
+              } else {
+                console.log(passCode);
+                passCode = "exit";
+              }
+            } else {
+              console.log(passCode);
+              console.log(
+                "A barely audible *click* and the heavy door creaks open."
+              );
+  
+              foyer.locked = false;
+              passCode = "exit";
+            }
+          }
+        }
+  
+        //Use Item for other items
+      } else if (itemLookUp[useItem]?.name.includes(useItem)) {
+        if (itemLookUp[useItem].util === true) {
+          if (useItem == "railing") {
+            if (skateboard.place != "stairs") {
+              currentLocation = "second_floor";
+              console.log(`You safely climb the stairs.`)
+            } else {
+              console.log(
+                `You have died after falling backward in a farcical display of ineptitude.\nThe uber eats flung from your hand.`
+              );
+              console.log(death);
+              gameStatus = "end";
+            }
+          } else if (useItem == "freedom") {
+            if (uber_eats.place == "second_floor") {
+              console.log(
+                "You have successfully completed your work shift!\n   ___Congratulations!___"
+              );
+              console.log(creditCrawl);
+              gameStatus = "end";
+            } else {
+              console.log(`You can't use ${useItem}.`);
+            }
+          } else {
+            console.log(`You can't use the ${useItem} that way.`);
+          }
+        } else {
+          console.log(`Alas, ${useItem} is not useable at this time.`);
+        }
+      } else {
+        console.log("use 2nd if's else");
+      }
+    } else {
+      console.log(`You can not access ${useItem} from here now.`);
+    }
+  }
+  
+  function quit() {
+    return "Thanks for Playing"
+    console.log("Thanks for Playing");
+    process.exit();
+  }
+
 } 
