@@ -114,12 +114,17 @@ let roomLookUp = {
 
 var gameStatus = "pending";
 
+let answer;
+
+let passCode =  'Please input PassCode to enter - type "exit" to close';
+
+let doorPrompt;
+
 let currentLocation = "car";
 
 const welcomeMessage =
   "182 Main St- You are sitting in your car, parked on Main Street between Church and South Winooski. The streets are deserted, you see that there is a light on in a second floor window. You are meant to deliver the Uber Eats to someone at this address.";
 
-const prompt = `What do you do? >_`;
 
 const death = `The dead can not deliver food, your mission failed...\n   ___GaMe OvEr___`;
 
@@ -288,8 +293,6 @@ const uber_eats = new Item(
   "car"
 );
 
-
-
 // ------------------------------------PlayerCommands------------------------------------------------ //
 
 let commands = {
@@ -342,7 +345,7 @@ export const domDisplay = (playerInput) => {
                 - break down each problem into small chunks
                     - What is the process of picking up an item exactly? ex: Look. Pick from a list of items. Put into players list of items... 
     */
-  let answer = playerInput;
+  answer = playerInput;
 
   var parseAnswer = [];
   parseAnswer.push(answer.toLowerCase().split(" "));
@@ -388,7 +391,7 @@ export const domDisplay = (playerInput) => {
     return quit;
 
     //else if for take
-  } else if (commands.take.includes(word1)) { 
+  } else if (commands.take.includes(word1)) {
     let takeReturn = take(word2);
     return takeReturn;
 
@@ -404,22 +407,11 @@ export const domDisplay = (playerInput) => {
 
     //else for help
   } else {
-    return `type "help" for a list commands`;
+    return `type "help" for assistance`;
   }
-
 };
 // Your code here
 
-// ---------------------------------AsyncInterfaceLoop(s)-------------------------------------------------- //
-
-// start();
-
-// async function start() {
-//   gameStatus = "start";
-
-//   console.log(welcomeMessage);
-
-//   while (gameStatus !== "end") {
 
 // -----------------------------------SplittingResponseInto2Words--------------------------------------------------- //
 
@@ -438,19 +430,18 @@ function drop(dropItem) {
     if (uber_eats.place == "second_floor") {
       deliverance.locked = false;
       console.log("The path to freedom is clear.");
-      return "The path to freedom is clear."
+      return "The path to freedom is clear.";
     }
   } else {
     console.log(
-      `You can not drop ${dropItem} because it is not in your inventory.` );
-      return `You can not drop ${dropItem} because it is not in your inventory.`;
-   
+      `You can not drop ${dropItem} because it is not in your inventory.`
+    );
+    return `You can not drop ${dropItem} because it is not in your inventory.`;
   }
 }
 
 function help() {
-  return `You are currently at ${currentLocation} \nPlease give your instructions in the following format: "word 1 = command" "word 2 = target of command".`;
- 
+  return `Please give your instructions in the following format: "word 1 = command" "word 2 = target of command". You are currently at ${currentLocation} -Type "where" to see some of your options.`;
 }
 
 function inventory() {
@@ -477,45 +468,43 @@ function look(objOfInt) {
   }
 }
 
-
 //function to move between locations
 function move(newLocation) {
-  
   let possMoves = bldgMap[currentLocation];
 
   if (!possMoves.includes(newLocation)) {
     return `Unfortumantely, you can not go to ${newLocation} from ${currentLocation}`;
-  } else if (roomLookUp.foyer.name.includes(newLocation)) {
+  }
+  if (roomLookUp.foyer.name.includes(newLocation)) {
     if (foyer.locked === true) {
       return `The front door is locked, use keypad to enter.`;
     } else {
+        currentLocation = newLocation;
       return `Moving to ${newLocation}... `;
     }
-  } else if (roomLookUp[newLocation].locked === true) {
+  }
+  if (roomLookUp[newLocation].locked === true) {
     return `You can not go to ${newLocation} from ${currentLocation} the way is blocked`;
-
-    // } else if ([currentLocation] == "stairs" && [newLocation] == "second_floor") {
-    //     if
   } else {
-    console.log(`Moving to ${newLocation}... `);
     currentLocation = newLocation;
     if (uber_eats.place !== "second_floor") {
-      console.log("The Uber Eats needs to be delivered!");
+      return `Moving to ${newLocation}... The Uber Eats needs to be delivered!`;
     } else {
-      console.log("The path to freedom is clear.");
+      return `Moving to ${newLocation}... The path to freedom is clear.`;
     }
   }
 }
 
 //function to show possible moves and interactable objects
 function possibleMoves() {
-  console.log(`You are currently in ${currentLocation}.`);
   let poss = JSON.stringify(bldgMap[currentLocation]);
   let possItems = JSON.stringify(roomLookUp[currentLocation].Item);
-  console.log(`From here you can go to: ${poss}.`);
-  if (possItems !== false) console.log(`Around you, you see ${possItems}.`);
+  if (possItems !== false) {
+    return `You are currently in ${currentLocation}. From here you can go to: ${poss}. Around you, you see ${possItems}.`;
+  } else {
+    return `You are currently in ${currentLocation}. From here you can go to: ${poss}.`;
+  }
 }
-
 //function to add items to inventory and remove them from existing locations
 function take(item2Add) {
   if (itemLookUp[item2Add]?.name.includes(item2Add)) {
@@ -523,25 +512,35 @@ function take(item2Add) {
       if (itemLookUp[item2Add].inv === true) {
         if (uber_eats.place !== "second_floor") {
           deliverance.locked == true;
-          console.log("The Uber Eats needs to be delivered!");
-        }
-        console.log(`You add ${item2Add} to your inventory.`);
-        player.inventory.push(item2Add);
-        itemLookUp[item2Add].place = "inventory";
-        // Removing the specified element by value from the array
-        for (var i = 0; i < roomLookUp[currentLocation].Item.length; i++) {
-          if (roomLookUp[currentLocation].Item[i] === item2Add) {
-            var spliced = roomLookUp[currentLocation].Item.splice(i, 1);
+          player.inventory.push(item2Add);
+          itemLookUp[item2Add].place = "inventory";
+          // Removing the specified element by value from the array
+          for (var i = 0; i < roomLookUp[currentLocation].Item.length; i++) {
+            if (roomLookUp[currentLocation].Item[i] === item2Add) {
+              var spliced = roomLookUp[currentLocation].Item.splice(i, 1);
+            }
+          }
+          return `You add ${item2Add} to your inventory. THE UBER EATS MUST BE DELIVERED!`;
+        } else {
+          player.inventory.push(item2Add);
+          itemLookUp[item2Add].place = "inventory";
+
+          // Removing the specified element by value from the array
+          for (var i = 0; i < roomLookUp[currentLocation].Item.length; i++) {
+            if (roomLookUp[currentLocation].Item[i] === item2Add) {
+              var spliced = roomLookUp[currentLocation].Item.splice(i, 1);
+            }
+            return `You add ${item2Add} to your inventory.`;
           }
         }
       } else {
-        console.log(`You can not pick up ${item2Add}.`);
+        return `You can not pick up ${item2Add}.`;
       }
     } else {
-      console.log(`${item2Add} is not at ${currentLocation}.`);
+      return `${item2Add} is not at ${currentLocation}.`;
     }
   } else {
-    console.log(`${item2Add} is not a valid choice.`);
+    return `${item2Add} is not a valid choice.`;
   }
 }
 
@@ -549,47 +548,29 @@ function take(item2Add) {
 function teleport(newLocation) {
   if (roomLookUp[newLocation].name.includes(newLocation)) {
     currentLocation = newLocation;
+    return `Moving to ${newLocation}... `;
   } else {
-    console.log(`Check your spelling ${newLocation} is not a valid location.`);
+    return `Check your spelling ${newLocation} is not a valid location.`;
   }
 }
 
 // -------------------------------------UseItem--------------------------------------------------- //
-// While loop for keypad entry
+
 function use(useItem) {
   if (
     roomLookUp[currentLocation].Item.includes(useItem) ||
     player.inventory.includes(useItem)
   ) {
+    // For keypad entry
     if (itemLookUp.keypad.name.includes(useItem)) {
-      let passCode = "";
-      keyStart();
-      async function keyStart() {
-        let doorPrompt = "Please input PassCode to enter (type exit to end) >_";
-        while (passCode !== "exit") {
-          passCode = await ask(doorPrompt);
+      
+      keypadStart();
+      return keypadStart()
 
-          if (passCode !== "93378") {
-            if (passCode !== "exit") {
-              console.log(passCode);
-              console.log(
-                "A disembodied voice drones : That code is incorrect."
-              );
-            } else {
-              console.log(passCode);
-              passCode = "exit";
-            }
-          } else {
-            console.log(passCode);
-            console.log(
-              "A barely audible *click* and the heavy door creaks open."
-            );
-
-            foyer.locked = false;
-            passCode = "exit";
-          }
-        }
-      }
+      
+          
+        
+      
 
       //Use Item for other items
     } else if (itemLookUp[useItem]?.name.includes(useItem)) {
@@ -597,76 +578,95 @@ function use(useItem) {
         if (useItem == "railing") {
           if (skateboard.place != "stairs") {
             currentLocation = "second_floor";
-            console.log(`You safely climb the stairs.`);
+            return `You safely climb the stairs.`;
           } else {
-            console.log(
-              `You have died after falling backward in a farcical display of ineptitude.\nThe uber eats flung from your hand.`
-            );
-            console.log(death);
             gameStatus = "end";
+            return `You have died after falling backward in a farcical display of ineptitude.\nThe uber eats flung from your hand. ${death}`
           }
         } else if (useItem == "freedom") {
           if (uber_eats.place == "second_floor") {
-            console.log(
-              "You have successfully completed your work shift!\n   ___Congratulations!___"
-            );
-            console.log(creditCrawl);
             gameStatus = "end";
+            return `You have successfully completed your work shift!   ___Congratulations!___${creditCrawl}`;
+          
           } else {
-            console.log(`You can't use ${useItem}.`);
+            return `What is Freedom when an Uber Eats customer goes Hungry?`;
           }
-        } else {
-          console.log(`You can't use the ${useItem} that way.`);
+     
         }
       } else {
-        console.log(`Alas, ${useItem} is not useable at this time.`);
+        return `Alas, ${useItem} is not useable at this time.`;
       }
     } else {
-      console.log("use 2nd if's else");
+        return `Alas, ${useItem} is not something that can be used.`;
     }
+   
   } else {
-    console.log(`You can not access ${useItem} from here now.`);
+    return `You can not access ${useItem} from here now.`;
   }
 }
 
+// ------------------------------------PassCode----------------------------------------------------- //
+
+function keypadStart() {
+   
+    passCode = prompt(doorPrompt, passCode)
+
+    
+    if (passCode !== "93378") {
+        if (passCode !== "exit") {
+          console.log(passCode);
+          return "A disembodied voice drones : That code is incorrect.";
+         
+        
+      } else {
+        console.log(foyer.locked)
+
+        foyer.locked = false;
+     
+        doorPrompt = "The Door is Open";
+        return "A barely audible *click* and the heavy door creaks open."
+        }
+}
+}
+
 function quit() {
-  return "Thanks for Playing";
+ 
   console.log("Thanks for Playing");
-  process.exit();
+  return "Thanks for Playing";
 }
 
 // -------------------------------------MovementStateMachine------------------------------------------------ //
 
 const bldgMap = {
-    car: ["driveway", "deliverance"],
-    deliverance: ["car"],
-    dining: ["foyer", "kitchen"],
-    driveway: ["porch", "car"],
-    foyer: ["porch", "hall", "stairs", "dining"],
-    hall: ["foyer", "kitchen"],
-    kitchen: ["dining", "hall"],
-    porch: ["driveway", "foyer"],
-    second_floor: ["stairs"],
-    stairs: ["foyer", "second_floor"],
-  };
+  car: ["driveway", "deliverance"],
+  deliverance: ["car"],
+  dining: ["foyer", "kitchen"],
+  driveway: ["porch", "car"],
+  foyer: ["porch", "hall", "stairs", "dining"],
+  hall: ["foyer", "kitchen"],
+  kitchen: ["dining", "hall"],
+  porch: ["driveway", "foyer"],
+  second_floor: ["stairs"],
+  stairs: ["foyer", "second_floor"],
+};
 
-  // ----------------------------------Item LookUp Table------------------------------------------------------------ //
+// ----------------------------------Item LookUp Table------------------------------------------------------------ //
 
 let itemLookUp = {
-    cabinet_under_sink: cabinet_under_sink,
-    cellphone: cellphone,
-    cigarette_butts: cigarette_butts,
-    directory: directory,
-    freedom: freedom,
-    fridge: fridge,
-    gravel: gravel,
-    ink_pen: ink_pen,
-    keypad: keypad,
-    microwave: microwave,
-    outdoor_life_magazine: outdoor_life_magazine,
-    painting: painting,
-    railing: railing,
-    silverware_drawer: silverware_drawer,
-    skateboard: skateboard,
-    uber_eats: uber_eats,
-  };
+  cabinet_under_sink: cabinet_under_sink,
+  cellphone: cellphone,
+  cigarette_butts: cigarette_butts,
+  directory: directory,
+  freedom: freedom,
+  fridge: fridge,
+  gravel: gravel,
+  ink_pen: ink_pen,
+  keypad: keypad,
+  microwave: microwave,
+  outdoor_life_magazine: outdoor_life_magazine,
+  painting: painting,
+  railing: railing,
+  silverware_drawer: silverware_drawer,
+  skateboard: skateboard,
+  uber_eats: uber_eats,
+};
