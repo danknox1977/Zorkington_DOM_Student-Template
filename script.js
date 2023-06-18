@@ -13,50 +13,6 @@
             - use your browsers console throughout testing.
 */
 
-export const gameDetails = {   
-    title: `Ask Not for Whom the Uber Eats, the Uber Eats for Thee`,
-    desc: '182 Main St- You are sitting in your car, parked on Main Street between Church and South Winooski. The streets are deserted, you see that there is a light on in a second floor window. You are meant to deliver the Uber Eats to someone at this address.',
-    author: 'Dan Knox',
-    cohort: 'SBPT-May-2023',
-    startingRoomDescription: 'What you see before you is...',
-    playerCommands: [
-        // replace these with your games commands as needed
-        'drop', 'inventory', 'look', 'move', 'where', 'quit', 'use', 'take'
-    ]
-    // Commands are basic things that a player can do throughout the game besides possibly moving to another room. This line will populate on the footer of your game for players to reference. 
-    // This shouldn't be more than 6-8 different commands.
-}
-
-// Your code here
-// ---------------------------------GameFiles--------------------------------------------------- //
-var gameStatus = "pending";
-
-let currentLocation = "car";
-
-const welcomeMessage = `182 Main St.
-You are sitting in your car, parked on Main Street between Church and South Winooski.\nThe streets are deserted, you see that there is a light on in a second floor window. \nYou are meant to deliver the Uber Eats to someone at this address.`;
-
-const prompt = `What do you do? >_`;
-
-const death = `The dead can not deliver food, your mission failed...\n   ___GaMe OvEr___`;
-
-const creditCrawl = `\n\n\n\n\n\n\n\n\n\n\n\n\n\n   ___Made By DanKnox___\n       ___2023___\n\n\n\n\n\n\n\n`;
-
-// -------------------------------------MovementStateMachine------------------------------------------------ //
-
-const bldgMap = {
-    car: ["driveway", "deliverance"],
-    deliverance: ["car"],
-    dining: ["foyer", "kitchen"],
-    driveway: ["porch", "car"],
-    foyer: ["porch", "hall", "stairs", "dining"],
-    hall: ["foyer", "kitchen"],
-    kitchen: ["dining", "hall"],
-    porch: ["driveway", "foyer"],
-    second_floor: ["stairs"],
-    stairs: ["foyer", "second_floor"],
-  };
-
 // ---------------------------------Room Classes--------------------------------------------------- //
 
 //Room Class
@@ -153,6 +109,55 @@ let roomLookUp = {
     second_floor: second_floor,
     stairs: stairs,
   };
+
+// -----------------------------------Global Variables------------------------------------------------------ //
+
+var gameStatus = "pending";
+
+let currentLocation = "car";
+
+const welcomeMessage = '182 Main St- You are sitting in your car, parked on Main Street between Church and South Winooski. The streets are deserted, you see that there is a light on in a second floor window. You are meant to deliver the Uber Eats to someone at this address.',
+
+const prompt = `What do you do? >_`;
+
+const death = `The dead can not deliver food, your mission failed...\n   ___GaMe OvEr___`;
+
+const creditCrawl = `\n\n\n\n\n\n\n\n\n\n\n\n\n\n   ___Made By DanKnox___\n       ___2023___\n\n\n\n\n\n\n\n`;
+
+export const gameDetails = {   
+    title: `Ask Not for Whom the Uber Eats, the Uber Eats for Thee`,
+    desc: `${welcomeMessage}`,
+    author: 'Dan Knox',
+    cohort: 'SBPT-May-2023',
+    startingRoomDescription: `${roomLookUp[currentLocation].what}`,
+    playerCommands: [
+        // replace these with your games commands as needed
+        'drop', 'inventory', 'look', 'move', 'where', 'quit', 'use', 'take'
+    ]
+    // Commands are basic things that a player can do throughout the game besides possibly moving to another room. This line will populate on the footer of your game for players to reference. 
+    // This shouldn't be more than 6-8 different commands.
+}
+
+// Your code here
+// ---------------------------------GameFiles--------------------------------------------------- //
+
+
+// -------------------------------------MovementStateMachine------------------------------------------------ //
+
+const bldgMap = {
+    car: ["driveway", "deliverance"],
+    deliverance: ["car"],
+    dining: ["foyer", "kitchen"],
+    driveway: ["porch", "car"],
+    foyer: ["porch", "hall", "stairs", "dining"],
+    hall: ["foyer", "kitchen"],
+    kitchen: ["dining", "hall"],
+    porch: ["driveway", "foyer"],
+    second_floor: ["stairs"],
+    stairs: ["foyer", "second_floor"],
+  };
+
+
 
  // -------------------------------------Item ClassDeclaration-------------------------------------------------- //
 
