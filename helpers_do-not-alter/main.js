@@ -7,7 +7,7 @@ const brand = document.querySelector('.navbar-brand');
 const room = document.getElementById('room-display-container').firstChild;
 const foot = document.querySelector('footer');
 
-room.textContent = `Welcome to ${gameDetails.title}! ${gameDetails.startingRoomDescription}`;
+room.textContent = `As you begin your adventure you can see -- ${gameDetails.startingRoomDescription}`;
 
 let location;
 

@@ -27,70 +27,70 @@ class Room {
 
 const car = new Room(
   "car",
-  "A late model Kia Sorrento, idling obediently, lights on -with some muted music wafting \nfrom a slightly ajar window. Your cellphone battery is too low to remove from the charger,\nThe order of Uber Eats is on the passenger seat.",
+  "Your late model Kia Sorrento, idling obediently, lights on - some muted music wafts from a slightly ajar window. Your cellphone battery is too low to remove from the charger, the order of Uber Eats is on the passenger seat.",
   ["cellphone", "uber_eats"],
   false
 );
 
 const deliverance = new Room(
   "deliverance",
-  "Freedom, the open road, on to the next adventure!",
+  "Use your freedom, nothing but the open road ahead of you, on to the next adventure!",
   ["freedom"],
   true
 );
 
 const dining = new Room(
   "dining room",
-  "A formal dining room, not the kind for everyday eating, covered in periodicals \nand office supplies.",
+  "A formal dining room, not the kind for everyday eating, covered in periodicals and office supplies.",
   ["outdoor_life_magazine", "ink_pen"],
   false
 );
 
 const driveway = new Room(
   "driveway",
-  "You look back at where you parked your car and hope you won't have to leave it \nidling too long.  You notice several cigarette butts in the gravel.",
+  "You look back at where you parked your car and hope you won't have to leave it idling too long.  You notice several cigarette butts in the gravel.",
   ["gravel", "cigarette_butts"],
   false
 );
 
 const foyer = new Room(
   "foyer",
-  "Or, antechamber, looks deserted only the sound of a distant television betrays the\npresence of other humans. There is a stair going up and a hall to your right.\nA directory lists the tenants and locations.",
-  ["directory"],
+  "The foyer, or antechamber, looks deserted. Only the sound of a distant television betrays the presence of other humans. There is a stair going up and a hall to your right, to your left a doorway to dark room. A directory lists the tenants and locations. A grandfather clock stands as a mute witness.",
+  ["directory", "grandfather_clock"],
   true
 );
 
 const hall = new Room(
   "hallway",
-  "A well lit hallway leading around the staircase that leads to the second floor, there\n is large landscape painting on the wall.\nThere are doors closed doors leading off to the right while the hall \nmakes a left hand turn\n into shadows...",
+  "A well lit hallway leading around the staircase that leads to the second floor, there is large landscape painting on the wall. There are closed doors leading off to the right while the hall makes a left hand turn into shadow...",
   ["painting"],
   false
 );
 
 const kitchen = new Room(
   "kitchen",
-  "A lovely and well kept kitchen, nobody cooks here.  There is a microwava and refridgerator\nand several cabinets and drawers",
+  "A lovely and well kept kitchen, nobody cooks here.  There is a microwava and refridgerator and several cabinets and drawers",
   ["fridge", "cabinet_under_sink", "microwave", "silverware_drawer"],
   false
 );
 
 const porch = new Room(
   "porch",
-  "The area before the entrance could best be described as a sidewalk, \nOn the door is a handwritten sign. \n--NO UNAUTHORIZED VISITORS-- That means you Carl\nA keypad by the door awaits your input.",
-  ["keypad"],
+  "The area before the entrance could best be described as a sidewalk, on the door is a handwritten sign. --NO UNAUTHORIZED VISITORS-- That means you Carl. A keypad by the door awaits your input. There is a newspaper discarded by the wall.",
+  ["keypad", "newspaper"],
   false
 );
 
 const second_floor = new Room(
   "second_floor",
-  "At the top of the stairs you see a shadowy figure, with their grasping hand out-stretched.\nThe figure emits a low, guttural growl it sounds like 'Cccccaaaaarrrrrllllll'...",
+  "At the top of the stairs you see a shadowy figure, with their grasping hand out-stretched. The figure emits a low, guttural growl it sounds like 'Cccccaaaaarrrrrllllll'...",
   [],
   true
 );
 
 const stairs = new Room(
   "stairs",
-  "A grand wooden staircase, the steps are just slightly too tall, as if made for \nsomeone a little taller than you are.  There is a railing to your \nright and what looks like a skateboard halfway up.",
+  "A grand wooden staircase, the steps are just slightly too tall, as if made for someone a little taller than you are.  There is a railing to your right and what looks like a skateboard halfway up.",
   ["railing", "skateboard"],
   false
 );
@@ -116,19 +116,18 @@ var gameStatus = "pending";
 
 let answer;
 
-let passCode =  'Please input PassCode to enter - type "exit" to close';
-
-let doorPrompt;
+let passCode;
+  
+let doorPrompt = 'Please input PassCode and click "okay" to enter - click "cancel" to close';
 
 let currentLocation = "car";
 
 const welcomeMessage =
   "182 Main St- You are sitting in your car, parked on Main Street between Church and South Winooski. The streets are deserted, you see that there is a light on in a second floor window. You are meant to deliver the Uber Eats to someone at this address.";
 
+const death = `The dead can not deliver food, your mission failed...   ___GaMe OvEr___`;
 
-const death = `The dead can not deliver food, your mission failed...\n   ___GaMe OvEr___`;
-
-const creditCrawl = `\n\n\n\n\n\n\n\n\n\n\n\n\n\n   ___Made By DanKnox___\n       ___2023___\n\n\n\n\n\n\n\n`;
+const creditCrawl = `___Made By DanKnox______2023___`;
 
 export const gameDetails = {
   title: `Ask Not for Whom the Uber Eats, the Uber Eats for Thee`,
@@ -185,7 +184,7 @@ const cigarette_butts = new Item(
   "cigarette_butts",
   "Assorted brands, someone who lives nearby enjoys the occasional trip to flavour country.",
   false,
-  false,
+  true,
   "driveway"
 );
 
@@ -213,17 +212,25 @@ const fridge = new Item(
   "kitchen"
 );
 
+const grandfather_clock = new Item(
+  "grandfather_clock",
+  "This magnificent and ancient piece of technology shows signs of particular neglect.",
+  false,
+  false,
+  "foyer"
+);
+
 const gravel = new Item(
   "gravel",
   "Small pieces of igneous rock.",
   false,
-  false,
+  true,
   "driveway"
 );
 
 const keypad = new Item(
   "keypad",
-  "The door code keypad, typical 10 key numeric, you will need to input the right \ncode to unlock the door.",
+  "The door code keypad, typical 10 key numeric, you will need to input the right code to unlock the door.",
   true,
   false,
   "porch"
@@ -245,11 +252,19 @@ const microwave = new Item(
   "kitchen"
 );
 
+const newspaper = new Item(
+  "newspaper",
+  "Yesterday's free alternative weekly, the cover story is somehting about urban apiaries",
+  false,
+  true,
+  "porch"
+);
+
 const outdoor_life_magazine = new Item(
   "outdoor_life_magazine",
   "The date of this magazine says June of 2011 - the main article has someting to do with bass fishing.",
-  true,
   false,
+  true,
   "dining"
 );
 
@@ -270,7 +285,7 @@ const railing = new Item(
 );
 
 const silverware_drawer = new Item(
-  "silerverware_drawer",
+  "silverware_drawer",
   "Full of plastic utensils in plastic wrappers.",
   false,
   false,
@@ -279,7 +294,7 @@ const silverware_drawer = new Item(
 
 const skateboard = new Item(
   "skateboard",
-  "Despite its obvious overall wear, this skateboard's hubs look freshly greased.\nWhen this is on a stair it is a deadly hazard.",
+  "Despite its obvious overall wear, this skateboard's hubs look freshly greased. When this is on a stair it is a deadly hazard.",
   false,
   true,
   "stairs"
@@ -287,7 +302,7 @@ const skateboard = new Item(
 
 const uber_eats = new Item(
   "uber_eats",
-  "A bag of late night grub for your hungry customer inside, the note on the ticket provides\nthe entrance code: 93378.",
+  "A bag of late night grub for your hungry customer inside, the note on the ticket provides the entrance code: 93378.",
   false,
   true,
   "car"
@@ -387,8 +402,8 @@ export const domDisplay = (playerInput) => {
 
     //else if for quit
   } else if (commands.quit.includes(word1)) {
-    quit();
-    return quit;
+    let quitReturn = quit();
+    return quitReturn;
 
     //else if for take
   } else if (commands.take.includes(word1)) {
@@ -412,7 +427,6 @@ export const domDisplay = (playerInput) => {
 };
 // Your code here
 
-
 // -----------------------------------SplittingResponseInto2Words--------------------------------------------------- //
 
 // --------------------------------------commandFunctions-------------------------------------------------- //
@@ -429,13 +443,10 @@ function drop(dropItem) {
     }
     if (uber_eats.place == "second_floor") {
       deliverance.locked = false;
-      console.log("The path to freedom is clear.");
       return "The path to freedom is clear.";
     }
   } else {
-    console.log(
-      `You can not drop ${dropItem} because it is not in your inventory.`
-    );
+ 
     return `You can not drop ${dropItem} because it is not in your inventory.`;
   }
 }
@@ -445,7 +456,7 @@ function help() {
 }
 
 function inventory() {
-  console.log(player.inventory);
+  return `Player Inventory: ${player.inventory}`;
 }
 
 //function to look at rooms & items
@@ -479,8 +490,8 @@ function move(newLocation) {
     if (foyer.locked === true) {
       return `The front door is locked, use keypad to enter.`;
     } else {
-        currentLocation = newLocation;
-      return `Moving to ${newLocation}... `;
+      currentLocation = newLocation;
+      return `Moving to ${newLocation}... ${roomLookUp[currentLocation].what}`;
     }
   }
   if (roomLookUp[newLocation].locked === true) {
@@ -488,7 +499,7 @@ function move(newLocation) {
   } else {
     currentLocation = newLocation;
     if (uber_eats.place !== "second_floor") {
-      return `Moving to ${newLocation}... The Uber Eats needs to be delivered!`;
+      return `Moving to ${newLocation}... ${roomLookUp[currentLocation].what}`;
     } else {
       return `Moving to ${newLocation}... The path to freedom is clear.`;
     }
@@ -497,10 +508,10 @@ function move(newLocation) {
 
 //function to show possible moves and interactable objects
 function possibleMoves() {
-  let poss = JSON.stringify(bldgMap[currentLocation]);
+  let poss = (bldgMap[currentLocation]);
   let possItems = JSON.stringify(roomLookUp[currentLocation].Item);
   if (possItems !== false) {
-    return `You are currently in ${currentLocation}. From here you can go to: ${poss}. Around you, you see ${possItems}.`;
+    return `You are currently in ${currentLocation}. From here you can go to: ${JSON.stringify(poss)}. Around you, you see: ${possItems}.`;
   } else {
     return `You are currently in ${currentLocation}. From here you can go to: ${poss}.`;
   }
@@ -563,14 +574,8 @@ function use(useItem) {
   ) {
     // For keypad entry
     if (itemLookUp.keypad.name.includes(useItem)) {
-      
-      keypadStart();
-      return keypadStart()
-
-      
-          
-        
-      
+      let keypadStartReturn = keypadStart();
+      return keypadStartReturn;
 
       //Use Item for other items
     } else if (itemLookUp[useItem]?.name.includes(useItem)) {
@@ -578,28 +583,25 @@ function use(useItem) {
         if (useItem == "railing") {
           if (skateboard.place != "stairs") {
             currentLocation = "second_floor";
-            return `You safely climb the stairs.`;
+            return `You safely climb the stairs... ${roomLookUp[currentLocation].what} `;
           } else {
             gameStatus = "end";
-            return `You have died after falling backward in a farcical display of ineptitude.\nThe uber eats flung from your hand. ${death}`
+            return `You have died after falling backward in a farcical display of ineptitude. The uber eats flung from your hand. ${death}`;
           }
         } else if (useItem == "freedom") {
           if (uber_eats.place == "second_floor") {
             gameStatus = "end";
             return `You have successfully completed your work shift!   ___Congratulations!___${creditCrawl}`;
-          
           } else {
             return `What is Freedom when an Uber Eats customer goes Hungry?`;
           }
-     
         }
       } else {
         return `Alas, ${useItem} is not useable at this time.`;
       }
     } else {
-        return `Alas, ${useItem} is not something that can be used.`;
+      return `Alas, ${useItem} is not something that can be used.`;
     }
-   
   } else {
     return `You can not access ${useItem} from here now.`;
   }
@@ -608,30 +610,25 @@ function use(useItem) {
 // ------------------------------------PassCode----------------------------------------------------- //
 
 function keypadStart() {
-   
-    passCode = prompt(doorPrompt, passCode)
-
-    
+  if (foyer.locked == true) {
+    passCode = prompt(doorPrompt, '*****');
+ 
+    if (passCode === null) {
+      return `${roomLookUp[currentLocation].what}`;
+    }
     if (passCode !== "93378") {
-        if (passCode !== "exit") {
-          console.log(passCode);
-          return "A disembodied voice drones : That code is incorrect.";
-         
-        
-      } else {
-        console.log(foyer.locked)
-
-        foyer.locked = false;
-     
-        doorPrompt = "The Door is Open";
-        return "A barely audible *click* and the heavy door creaks open."
-        }
-}
+    
+      return "A disembodied voice drones: That code does not unlock the door.";
+    } else {
+      foyer.locked = false;
+      return "A barely audible *click* and the heavy door creaks open.";
+    }
+  } else {
+    return `The door is open, you do not need to use the keypad again.`;
+  }
 }
 
 function quit() {
- 
-  console.log("Thanks for Playing");
   return "Thanks for Playing";
 }
 
@@ -659,10 +656,12 @@ let itemLookUp = {
   directory: directory,
   freedom: freedom,
   fridge: fridge,
+  grandfather_clock: grandfather_clock,
   gravel: gravel,
   ink_pen: ink_pen,
   keypad: keypad,
   microwave: microwave,
+  newspaper: newspaper,
   outdoor_life_magazine: outdoor_life_magazine,
   painting: painting,
   railing: railing,
