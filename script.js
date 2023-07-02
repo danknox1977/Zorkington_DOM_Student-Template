@@ -17,10 +17,10 @@
 
 //Room Class
 class Room {
-  constructor(name, what, Item, locked) {
+  constructor(name, what, item, locked) {
     this.name = name;
     this.what = what;
-    this.Item = Item;
+    this.item = item;
     this.locked = locked;
   }
 }
@@ -55,7 +55,7 @@ const driveway = new Room(
 
 const foyer = new Room(
   "foyer",
-  "The foyer, or antechamber, looks deserted. Only the sound of a distant television betrays the presence of other humans. There is a stair going up and a hall to your right, to your left a doorway to dark room. A directory lists the tenants and locations. A grandfather clock stands as a mute witness.",
+  "The foyer, or antechamber, looks deserted. Only the sound of a distant television betrays the presence of other humans. There is a stair going up and a hall to your right, to your left a doorway to a dark room. A directory lists the tenants and their locations. A grandfather clock stands as a mute witness.",
   ["directory", "grandfather_clock"],
   true
 );
@@ -137,14 +137,14 @@ export const gameDetails = {
   startingRoomDescription: `${roomLookUp[currentLocation].what}`,
   playerCommands: [
     // replace these with your games commands as needed
-    "drop",
-    "inventory",
-    "look",
-    "move",
-    "where",
-    "quit",
-    "use",
-    "take",
+    "drop(d)",
+    "inventory(i)",
+    "look(l)",
+    "move(m)",
+    "where/what(w)",
+    "quit(q)",
+    "use(u)",
+    "take(t)",
   ],
   // Commands are basic things that a player can do throughout the game besides possibly moving to another room. This line will populate on the footer of your game for players to reference.
   // This shouldn't be more than 6-8 different commands.
@@ -438,7 +438,7 @@ function drop(dropItem) {
       if (player.inventory[i] === dropItem) {
         var spliced = player.inventory.splice(i, 1);
       }
-      roomLookUp[currentLocation].Item.push(dropItem);
+      roomLookUp[currentLocation].item.push(dropItem);
       itemLookUp[dropItem].place = currentLocation;
     }
     if (uber_eats.place == "second_floor") {
@@ -509,40 +509,37 @@ function move(newLocation) {
 //function to show possible moves and interactable objects
 function possibleMoves() {
   let poss = (bldgMap[currentLocation]);
-  let possItems = JSON.stringify(roomLookUp[currentLocation].Item);
+  let possItems = JSON.stringify(roomLookUp[currentLocation].item);
   if (possItems !== false) {
     return `You are currently in ${currentLocation}. From here you can go to: ${JSON.stringify(poss)}. Around you, you see: ${possItems}.`;
   } else {
     return `You are currently in ${currentLocation}. From here you can go to: ${poss}.`;
   }
 }
+
 //function to add items to inventory and remove them from existing locations
 function take(item2Add) {
+  // if item2Add is an item at all
   if (itemLookUp[item2Add]?.name.includes(item2Add)) {
+    //if item2Add is at the currentLocation
     if (itemLookUp[item2Add].place.includes(currentLocation)) {
+      //if item can be put taken
       if (itemLookUp[item2Add].inv === true) {
+        //item put in inventory
+        player.inventory.push(item2Add);
+        itemLookUp[item2Add].place = "inventory";
+        // Removing the specified item by value from the currentRoom
+        for (var i = 0; i < roomLookUp[currentLocation].item.length; i++) {
+          if (roomLookUp[currentLocation].item[i] === item2Add) {
+            var spliced = roomLookUp[currentLocation].item.splice(i, 1);
+          }
+        }
+        //if item uber_eats is not on the second floor
         if (uber_eats.place !== "second_floor") {
           deliverance.locked == true;
-          player.inventory.push(item2Add);
-          itemLookUp[item2Add].place = "inventory";
-          // Removing the specified element by value from the array
-          for (var i = 0; i < roomLookUp[currentLocation].Item.length; i++) {
-            if (roomLookUp[currentLocation].Item[i] === item2Add) {
-              var spliced = roomLookUp[currentLocation].Item.splice(i, 1);
-            }
-          }
           return `You add ${item2Add} to your inventory. THE UBER EATS MUST BE DELIVERED!`;
         } else {
-          player.inventory.push(item2Add);
-          itemLookUp[item2Add].place = "inventory";
-
-          // Removing the specified element by value from the array
-          for (var i = 0; i < roomLookUp[currentLocation].Item.length; i++) {
-            if (roomLookUp[currentLocation].Item[i] === item2Add) {
-              var spliced = roomLookUp[currentLocation].Item.splice(i, 1);
-            }
-            return `You add ${item2Add} to your inventory.`;
-          }
+          return `You add ${item2Add} to your inventory.`;
         }
       } else {
         return `You can not pick up ${item2Add}.`;
@@ -569,7 +566,7 @@ function teleport(newLocation) {
 
 function use(useItem) {
   if (
-    roomLookUp[currentLocation].Item.includes(useItem) ||
+    roomLookUp[currentLocation].item.includes(useItem) ||
     player.inventory.includes(useItem)
   ) {
     // For keypad entry
