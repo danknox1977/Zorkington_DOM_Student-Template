@@ -191,7 +191,7 @@ const cigarette_butts = new Item(
 const directory = new Item(
   "directory",
   "Many unoccupied offices, you see residential information for the 2nd floor.",
-  true,
+  false,
   false,
   "foyer"
 );
@@ -207,7 +207,7 @@ const freedom = new Item(
 const fridge = new Item(
   "fridge",
   "You see some curdled milk and some takeout soy sauce packets.",
-  true,
+  false,
   false,
   "kitchen"
 );
@@ -239,7 +239,7 @@ const keypad = new Item(
 const ink_pen = new Item(
   "ink_pen",
   "A ballpoint clicker pen with the name of a local business on it, the pen is out of ink.",
-  true,
+  false,
   true,
   "dining"
 );
@@ -247,7 +247,7 @@ const ink_pen = new Item(
 const microwave = new Item(
   "microwave",
   "This microwave still smells pleasantly like popcorn.",
-  true,
+  false,
   false,
   "kitchen"
 );
@@ -438,9 +438,10 @@ function drop(dropItem) {
       if (player.inventory[i] === dropItem) {
         var spliced = player.inventory.splice(i, 1);
       }
+    }
       roomLookUp[currentLocation].item.push(dropItem);
       itemLookUp[dropItem].place = currentLocation;
-    }
+    
     if (uber_eats.place == "second_floor") {
       deliverance.locked = false;
       return "The path to freedom is clear.";
